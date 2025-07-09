@@ -1,0 +1,23 @@
+{
+  "name": "trae-agent-web",
+  "version": "1.0.0",
+  "description": "Web interface for Trae Agent - LLM-based agent for software engineering tasks",
+  "scripts": {
+    "build": "echo 'Static build complete'",
+    "dev": "python -m http.server 8000 --directory public",
+    "deploy": "wrangler pages deploy public"
+  },
+  "keywords": [
+    "ai",
+    "llm",
+    "agent",
+    "software-engineering",
+    "cloudflare",
+    "web-interface"
+  ],
+  "author": "Trae Agent Contributors",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}

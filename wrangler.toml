@@ -1,0 +1,23 @@
+name = "trae-agent-web"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[env.production]
+routes = [
+  { pattern = "trae-agent.pages.dev/*", zone_name = "pages.dev" }
+]
+
+# Pages configuration
+pages_build_output_dir = "public"
+
+# Functions configuration
+[functions]
+python_compatibility = "python-3.11"
+
+# Environment variables (these should be set in Cloudflare dashboard)
+[vars]
+ENVIRONMENT = "production"
+
+# For Python functions, specify the runtime
+[build]
+command = "echo 'Build complete'"
