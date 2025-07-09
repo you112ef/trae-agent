@@ -20,17 +20,25 @@ if ! wrangler whoami &> /dev/null; then
     wrangler login
 fi
 
-# Install dependencies if package.json exists
+# Install pnpm if not available
+if ! command -v pnpm &> /dev/null; then
+    echo "📦 Installing pnpm..."
+    npm install -g pnpm
+fi
+
+# Install dependencies and build if package.json exists
 if [ -f "package.json" ]; then
-    echo "📦 Installing dependencies..."
-    npm install
+    echo "📦 Installing dependencies with pnpm..."
+    pnpm install
+    echo "🔨 Building project..."
+    pnpm run build
 fi
 
 # Deploy to Cloudflare Pages
 echo "🌐 Deploying to Cloudflare Pages..."
 PROJECT_NAME="${1:-trae-agent-web}"
 
-wrangler pages deploy public --project-name "$PROJECT_NAME"
+wrangler pages deploy build/client --project-name "$PROJECT_NAME"
 
 echo "✅ Deployment complete!"
 echo ""

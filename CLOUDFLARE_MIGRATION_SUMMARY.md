@@ -43,9 +43,15 @@ Your Trae Agent project has been successfully modified to work on Cloudflare Pag
 
 2. **Or deploy manually**:
    ```bash
+   # Install dependencies
+   npm install -g pnpm
    npm install -g wrangler
    wrangler login
-   wrangler pages deploy public --project-name trae-agent-web
+   
+   # Build and deploy
+   pnpm install
+   pnpm run build
+   wrangler pages deploy build/client --project-name trae-agent-web
    ```
 
 3. **Access your deployment**: Visit the provided URL (e.g., `https://trae-agent-web.pages.dev`)

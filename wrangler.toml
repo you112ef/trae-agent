@@ -8,7 +8,7 @@ routes = [
 ]
 
 # Pages configuration
-pages_build_output_dir = "public"
+pages_build_output_dir = "build/client"
 
 # Functions configuration
 [functions]
@@ -18,6 +18,6 @@ python_compatibility = "python-3.11"
 [vars]
 ENVIRONMENT = "production"
 
-# For Python functions, specify the runtime
+# Build configuration
 [build]
-command = "echo 'Build complete'"
+command = "npm install pnpm && pnpm install && pnpm run build"

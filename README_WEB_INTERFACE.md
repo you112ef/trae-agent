@@ -15,15 +15,18 @@ The original CLI-based Trae Agent has been enhanced with:
 
 ## 🚀 Quick Deploy
 
-1. **Install Wrangler CLI**:
+1. **Install Dependencies**:
    ```bash
+   npm install -g pnpm
    npm install -g wrangler
    wrangler login
    ```
 
-2. **Deploy to Cloudflare Pages**:
+2. **Build and Deploy to Cloudflare Pages**:
    ```bash
-   wrangler pages deploy public --project-name trae-agent-web
+   pnpm install
+   pnpm run build
+   wrangler pages deploy build/client --project-name trae-agent-web
    ```
 
 3. **Access your deployment**: Visit the provided URL (e.g., `https://trae-agent-web.pages.dev`)
@@ -31,15 +34,18 @@ The original CLI-based Trae Agent has been enhanced with:
 ## 📁 Project Structure
 
 ```
-├── public/                 # Static web files
+├── public/                 # Source files
 │   ├── index.html         # Main web interface
 │   └── script.js          # Frontend JavaScript
+├── build/
+│   └── client/            # Built output directory
 ├── functions/             # Cloudflare Functions (Python)
 │   ├── api/
 │   │   └── execute-task.py # Backend API endpoint
 │   └── requirements.txt   # Python dependencies
 ├── wrangler.toml          # Cloudflare configuration
 ├── package.json           # Node.js metadata
+├── pnpm-lock.yaml         # pnpm lock file
 └── CLOUDFLARE_DEPLOYMENT.md # Detailed deployment guide
 ```
 
@@ -113,11 +119,18 @@ The original CLI-based Trae Agent has been enhanced with:
 
 ### Local Testing
 ```bash
-# Serve static files locally
+# Install dependencies and build
+pnpm install
+pnpm run build
+
+# Serve built files locally
 npm run dev
 
+# Or use pnpm dev command
+pnpm run dev:pnpm
+
 # Full local development with Functions
-wrangler pages dev public
+wrangler pages dev build/client
 ```
 
 ### Custom Modifications

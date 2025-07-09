@@ -11,9 +11,13 @@ This guide will help you deploy the Trae Agent web interface to Cloudflare Pages
 
 ## Quick Start
 
-### 1. Install Wrangler CLI
+### 1. Install Dependencies
 
 ```bash
+# Install pnpm globally
+npm install -g pnpm
+
+# Install Wrangler CLI
 npm install -g wrangler
 ```
 
@@ -23,11 +27,15 @@ npm install -g wrangler
 wrangler login
 ```
 
-### 3. Deploy to Cloudflare Pages
+### 3. Build and Deploy to Cloudflare Pages
 
 ```bash
+# Install dependencies and build
+pnpm install
+pnpm run build
+
 # Deploy the project
-wrangler pages deploy public --project-name trae-agent-web
+wrangler pages deploy build/client --project-name trae-agent-web
 ```
 
 ## Detailed Setup
@@ -37,9 +45,11 @@ wrangler pages deploy public --project-name trae-agent-web
 Your project should have this structure:
 ```
 trae-agent/
-├── public/
+├── public/                 # Source files
 │   ├── index.html          # Main web interface
 │   └── script.js           # Frontend JavaScript
+├── build/
+│   └── client/             # Built output directory
 ├── functions/
 │   ├── api/
 │   │   └── execute-task.py # Backend API function
@@ -47,6 +57,7 @@ trae-agent/
 ├── trae_agent/             # Original Python package
 ├── wrangler.toml          # Cloudflare configuration
 ├── package.json           # Node.js metadata
+├── pnpm-lock.yaml         # pnpm lock file
 └── CLOUDFLARE_DEPLOYMENT.md
 ```
 
@@ -89,21 +100,30 @@ https://your-project.pages.dev/api/execute-task
 ### 1. Install Dependencies
 
 ```bash
-# Install Node.js dependencies
-npm install
+# Install pnpm globally (if not already installed)
+npm install -g pnpm
+
+# Install project dependencies
+pnpm install
 
 # Install Python dependencies (optional for local testing)
 uv sync  # or pip install -r requirements.txt
 ```
 
-### 2. Run Local Development Server
+### 2. Build and Run Local Development Server
 
 ```bash
-# Serve static files locally
+# Build the project
+pnpm run build
+
+# Serve built files locally
 npm run dev
 
+# Or use pnpm dev command
+pnpm run dev:pnpm
+
 # Or use Wrangler for full local development with Functions
-wrangler pages dev public
+wrangler pages dev build/client
 ```
 
 ### 3. Access the Application
@@ -117,7 +137,13 @@ Open your browser to:
 ### Option 1: Manual Deployment
 
 ```bash
-wrangler pages deploy public --project-name trae-agent-web
+# Build and deploy
+pnpm install
+pnpm run build
+wrangler pages deploy build/client --project-name trae-agent-web
+
+# Or use the automated script
+./deploy.sh
 ```
 
 ### Option 2: Git Integration
@@ -126,8 +152,8 @@ wrangler pages deploy public --project-name trae-agent-web
 2. In Cloudflare Dashboard → Pages → Create a project
 3. Connect your Git repository
 4. Set build settings:
-   - **Build command**: `npm run build`
-   - **Build output directory**: `public`
+   - **Build command**: `npm install pnpm && pnpm install && pnpm run build`
+   - **Build output directory**: `/build/client`
    - **Root directory**: `/` (or your subdirectory)
 
 ### Option 3: CI/CD with GitHub Actions
@@ -149,8 +175,16 @@ jobs:
         with:
           node-version: '18'
       
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      
       - name: Install dependencies
-        run: npm install
+        run: pnpm install
+      
+      - name: Build project
+        run: pnpm run build
       
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
@@ -158,7 +192,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: trae-agent-web
-          directory: public
+          directory: build/client
 ```
 
 ## Configuration
