@@ -20,4 +20,4 @@ ENVIRONMENT = "production"
 
 # Build configuration
 [build]
-command = "npm install -g pnpm@9.0.0 && pnpm install --frozen-lockfile && pnpm run build"
+command = "npm install -g pnpm@9.0.0 && pnpm install && pnpm run build"

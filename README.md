@@ -328,6 +328,32 @@ trae-cli show-config
 chmod +x /path/to/your/project
 ```
 
+## 🌐 Web Interface Deployment
+
+Trae Agent includes a web interface that can be deployed to Cloudflare Pages. For detailed deployment instructions, see [CLOUDFLARE_DEPLOYMENT.md](CLOUDFLARE_DEPLOYMENT.md).
+
+### Quick Deployment
+
+```bash
+# Install dependencies
+pnpm install
+
+# Build the project
+pnpm run build
+
+# Deploy to Cloudflare Pages
+wrangler pages deploy build/client --project-name trae-agent-web
+```
+
+### Troubleshooting Deployment
+
+If you encounter pnpm lockfile version issues during deployment:
+
+```bash
+# Regenerate lockfile with correct pnpm version
+./regenerate-lockfile.sh
+```
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
