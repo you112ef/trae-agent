@@ -152,7 +152,7 @@ wrangler pages deploy build/client --project-name trae-agent-web
 2. In Cloudflare Dashboard → Pages → Create a project
 3. Connect your Git repository
 4. Set build settings:
-   - **Build command**: `npm install pnpm && pnpm install && pnpm run build`
+   - **Build command**: `npm install -g pnpm@9.0.0 && pnpm install --frozen-lockfile && pnpm run build`
    - **Build output directory**: `/build/client`
    - **Root directory**: `/` (or your subdirectory)
 
@@ -178,10 +178,10 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 8
+          version: 9
       
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
       
       - name: Build project
         run: pnpm run build

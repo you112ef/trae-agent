@@ -20,7 +20,7 @@
   "author": "Trae Agent Contributors",
   "license": "MIT",
   "devDependencies": {
-    "wrangler": "^3.0.0"
+    "wrangler": "^3.78.10"
   },
-  "packageManager": "pnpm@8.0.0"
+  "packageManager": "pnpm@9.0.0"
 }
