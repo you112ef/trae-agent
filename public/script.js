@@ -33,6 +33,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update model options based on initial provider
     updateModelOptions();
     
+    // Add smooth scrolling to chat container
+    chatContainer.style.scrollBehavior = 'smooth';
+    
     console.log('Trae Agent Web Interface initialized');
 });
 
@@ -51,6 +54,7 @@ async function handleTaskSubmit(event) {
     
     const task = taskInput.value.trim();
     if (!task) {
+        showNotification('يرجى إدخال مهمة', 'error');
         return;
     }
     
@@ -95,7 +99,7 @@ async function handleTaskSubmit(event) {
         });
         
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error(`خطأ في HTTP! الحالة: ${response.status}`);
         }
         
         const result = await response.json();
@@ -105,7 +109,7 @@ async function handleTaskSubmit(event) {
         
         if (result.success) {
             // Add agent response to chat
-            addMessage('agent', result.response || 'Task completed successfully!');
+            addMessage('agent', result.response || 'تم إكمال المهمة بنجاح!');
             
             // Show results if available
             if (result.trajectory || result.files || result.output) {
@@ -113,16 +117,18 @@ async function handleTaskSubmit(event) {
             }
             
             // Update status
-            updateStatus('success', 'Task completed');
+            updateStatus('success', 'تم الإكمال');
+            showNotification('تم إكمال المهمة بنجاح!', 'success');
         } else {
-            throw new Error(result.error || 'Unknown error occurred');
+            throw new Error(result.error || 'حدث خطأ غير معروف');
         }
         
     } catch (error) {
         console.error('Error executing task:', error);
         hideTypingIndicator();
-        addMessage('error', `Error: ${error.message}`);
-        updateStatus('error', 'Task failed');
+        addMessage('error', `خطأ: ${error.message}`);
+        updateStatus('error', 'فشلت المهمة');
+        showNotification(`خطأ: ${error.message}`, 'error');
     } finally {
         setProcessingState(false);
     }
@@ -131,27 +137,27 @@ async function handleTaskSubmit(event) {
 // Add message to chat
 function addMessage(type, content) {
     const messageDiv = document.createElement('div');
-    messageDiv.className = 'flex items-start space-x-3';
+    messageDiv.className = 'flex items-start space-x-3 space-x-reverse message-bubble';
     
     let avatarHtml, messageClass, messageContent;
     
     switch (type) {
         case 'user':
-            avatarHtml = '<div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold">👤</div>';
-            messageClass = 'bg-green-50 rounded-lg p-3 max-w-md ml-auto';
-            messageContent = `<p class="text-sm">${escapeHtml(content)}</p>`;
+            avatarHtml = '<div class="w-10 h-10 bg-gradient-to-r from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-lg"><i class="fas fa-user"></i></div>';
+            messageClass = 'bg-gradient-to-r from-green-50 to-teal-50 rounded-2xl p-4 max-w-md shadow-sm';
+            messageContent = `<p class="text-sm text-gray-800">${escapeHtml(content)}</p>`;
             messageDiv.className += ' flex-row-reverse';
             break;
             
         case 'agent':
-            avatarHtml = '<div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">🤖</div>';
-            messageClass = 'bg-blue-50 rounded-lg p-3 max-w-md';
+            avatarHtml = '<div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-lg"><i class="fas fa-robot"></i></div>';
+            messageClass = 'bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-4 max-w-md shadow-sm';
             messageContent = formatAgentMessage(content);
             break;
             
         case 'error':
-            avatarHtml = '<div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-sm font-bold">⚠️</div>';
-            messageClass = 'bg-red-50 border border-red-200 rounded-lg p-3 max-w-md';
+            avatarHtml = '<div class="w-10 h-10 bg-gradient-to-r from-red-500 to-pink-600 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-lg"><i class="fas fa-exclamation-triangle"></i></div>';
+            messageClass = 'bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-2xl p-4 max-w-md shadow-sm';
             messageContent = `<p class="text-sm text-red-700">${escapeHtml(content)}</p>`;
             break;
     }
@@ -175,19 +181,19 @@ function formatAgentMessage(content) {
     // Format code blocks
     formatted = formatted.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
         const language = lang || 'text';
-        return `<pre class="bg-gray-800 text-gray-100 p-3 rounded mt-2 mb-2 overflow-x-auto"><code class="language-${language}">${code.trim()}</code></pre>`;
+        return `<pre class="bg-gray-800 text-gray-100 p-4 rounded-xl mt-3 mb-3 overflow-x-auto shadow-lg"><code class="language-${language}">${code.trim()}</code></pre>`;
     });
     
     // Format inline code
-    formatted = formatted.replace(/`([^`]+)`/g, '<code class="bg-gray-200 px-1 py-0.5 rounded text-sm">$1</code>');
+    formatted = formatted.replace(/`([^`]+)`/g, '<code class="bg-gray-200 px-2 py-1 rounded text-sm font-mono">$1</code>');
     
     // Format bold text
-    formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong class="font-semibold">$1</strong>');
     
     // Format links
-    formatted = formatted.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-blue-600 hover:underline" target="_blank">$1</a>');
+    formatted = formatted.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-blue-600 hover:text-blue-800 underline" target="_blank">$1</a>');
     
-    return `<div class="text-sm">${formatted}</div>`;
+    return `<div class="text-sm text-gray-800">${formatted}</div>`;
 }
 
 // Show typing indicator
@@ -207,20 +213,20 @@ function setProcessingState(processing) {
     taskInput.disabled = processing;
     
     if (processing) {
-        submitBtn.textContent = 'Processing...';
+        submitBtn.innerHTML = '<i class="fas fa-spinner loading-spinner ml-2"></i>جاري المعالجة...';
         submitBtn.classList.add('opacity-50');
-        updateStatus('processing', 'Working...');
+        updateStatus('processing', 'يعمل...');
     } else {
-        submitBtn.textContent = 'Send';
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane ml-2"></i>إرسال';
         submitBtn.classList.remove('opacity-50');
-        updateStatus('ready', 'Ready');
+        updateStatus('ready', 'جاهز');
     }
 }
 
 // Update status indicator
 function updateStatus(status, message) {
     statusIndicator.textContent = message;
-    statusIndicator.className = 'ml-3 px-2 py-1 text-xs rounded-full';
+    statusIndicator.className = 'mr-4 px-3 py-1 text-xs rounded-full font-medium';
     
     switch (status) {
         case 'ready':
@@ -244,25 +250,39 @@ function showResults(result) {
     
     if (result.trajectory) {
         content += `
-            <div class="border rounded-lg p-4">
-                <h4 class="font-medium mb-2">📋 Execution Trajectory</h4>
-                <p class="text-sm text-gray-600 mb-2">Steps: ${result.trajectory.steps || 'N/A'}</p>
-                <p class="text-sm text-gray-600">Duration: ${result.trajectory.duration || 'N/A'}</p>
+            <div class="border border-gray-200 rounded-xl p-4 bg-gradient-to-r from-blue-50 to-purple-50">
+                <h4 class="font-medium mb-3 flex items-center text-gray-800">
+                    <i class="fas fa-list-alt ml-3 text-blue-600"></i>
+                    مسار التنفيذ
+                </h4>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div class="flex items-center">
+                        <i class="fas fa-steps ml-2 text-gray-500"></i>
+                        <span class="text-gray-700">الخطوات: ${result.trajectory.steps || 'غير متوفر'}</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-clock ml-2 text-gray-500"></i>
+                        <span class="text-gray-700">المدة: ${result.trajectory.duration || 'غير متوفر'}</span>
+                    </div>
+                </div>
             </div>
         `;
     }
     
     if (result.files && result.files.length > 0) {
         content += `
-            <div class="border rounded-lg p-4">
-                <h4 class="font-medium mb-2">📁 Files Created/Modified</h4>
-                <ul class="text-sm space-y-1">
+            <div class="border border-gray-200 rounded-xl p-4 bg-gradient-to-r from-green-50 to-teal-50">
+                <h4 class="font-medium mb-3 flex items-center text-gray-800">
+                    <i class="fas fa-folder ml-3 text-green-600"></i>
+                    الملفات المُنشأة/المُعدلة
+                </h4>
+                <ul class="text-sm space-y-2">
         `;
         result.files.forEach(file => {
-            content += `<li class="flex items-center space-x-2">
-                <span class="text-gray-500">📄</span>
-                <span>${escapeHtml(file.path)}</span>
-                <span class="text-xs text-gray-400">(${file.action})</span>
+            content += `<li class="flex items-center space-x-2 space-x-reverse">
+                <i class="fas fa-file-code text-gray-500"></i>
+                <span class="text-gray-700">${escapeHtml(file.path)}</span>
+                <span class="text-xs text-gray-400 bg-gray-200 px-2 py-1 rounded">${file.action}</span>
             </li>`;
         });
         content += '</ul></div>';
@@ -270,9 +290,12 @@ function showResults(result) {
     
     if (result.output) {
         content += `
-            <div class="border rounded-lg p-4">
-                <h4 class="font-medium mb-2">💻 Command Output</h4>
-                <pre class="bg-gray-100 p-3 rounded text-xs overflow-x-auto">${escapeHtml(result.output)}</pre>
+            <div class="border border-gray-200 rounded-xl p-4 bg-gradient-to-r from-yellow-50 to-orange-50">
+                <h4 class="font-medium mb-3 flex items-center text-gray-800">
+                    <i class="fas fa-terminal ml-3 text-yellow-600"></i>
+                    مخرجات الأوامر
+                </h4>
+                <pre class="bg-gray-800 text-gray-100 p-4 rounded-xl text-xs overflow-x-auto shadow-lg">${escapeHtml(result.output)}</pre>
             </div>
         `;
     }
@@ -280,6 +303,76 @@ function showResults(result) {
     if (content) {
         resultsContent.innerHTML = content;
         resultsPanel.classList.remove('hidden');
+        
+        // Add animation
+        resultsPanel.style.opacity = '0';
+        resultsPanel.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            resultsPanel.style.transition = 'all 0.3s ease';
+            resultsPanel.style.opacity = '1';
+            resultsPanel.style.transform = 'translateY(0)';
+        }, 100);
+    }
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-xl shadow-lg transform transition-all duration-300 translate-x-full`;
+    
+    let bgColor, icon;
+    switch (type) {
+        case 'success':
+            bgColor = 'bg-green-500';
+            icon = 'fas fa-check-circle';
+            break;
+        case 'error':
+            bgColor = 'bg-red-500';
+            icon = 'fas fa-exclamation-circle';
+            break;
+        case 'warning':
+            bgColor = 'bg-yellow-500';
+            icon = 'fas fa-exclamation-triangle';
+            break;
+        default:
+            bgColor = 'bg-blue-500';
+            icon = 'fas fa-info-circle';
+    }
+    
+    notification.className += ` ${bgColor} text-white`;
+    notification.innerHTML = `
+        <div class="flex items-center">
+            <i class="${icon} ml-3"></i>
+            <span>${message}</span>
+            <button onclick="this.parentElement.parentElement.remove()" class="mr-3 hover:opacity-75">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.classList.remove('translate-x-full');
+    }, 100);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        notification.classList.add('translate-x-full');
+        setTimeout(() => notification.remove(), 300);
+    }, 5000);
+}
+
+// Toggle password visibility
+function togglePassword() {
+    const passwordIcon = document.getElementById('passwordIcon');
+    if (apiKeyInput.type === 'password') {
+        apiKeyInput.type = 'text';
+        passwordIcon.className = 'fas fa-eye-slash';
+    } else {
+        apiKeyInput.type = 'password';
+        passwordIcon.className = 'fas fa-eye';
     }
 }
 
@@ -324,13 +417,13 @@ function updateModelOptions() {
 // Validate configuration
 function validateConfiguration() {
     if (!apiKeyInput.value.trim()) {
-        alert('Please enter your API key');
+        showNotification('يرجى إدخال مفتاح API', 'error');
         apiKeyInput.focus();
         return false;
     }
     
     if (maxStepsInput.value < 1 || maxStepsInput.value > 50) {
-        alert('Max steps must be between 1 and 50');
+        showNotification('يجب أن تكون الخطوات القصوى بين 1 و 50', 'error');
         maxStepsInput.focus();
         return false;
     }
@@ -369,6 +462,12 @@ function loadConfiguration() {
 function fillTask(task) {
     taskInput.value = task;
     taskInput.focus();
+    
+    // Add visual feedback
+    taskInput.style.transform = 'scale(1.02)';
+    setTimeout(() => {
+        taskInput.style.transform = 'scale(1)';
+    }, 200);
 }
 
 // Utility function to escape HTML
@@ -402,12 +501,15 @@ function autoResize(textarea) {
 
 // Handle network errors gracefully
 window.addEventListener('offline', function() {
-    updateStatus('error', 'Offline');
+    updateStatus('error', 'غير متصل');
+    showNotification('انقطع الاتصال بالإنترنت', 'error');
 });
 
 window.addEventListener('online', function() {
-    updateStatus('ready', 'Ready');
+    updateStatus('ready', 'جاهز');
+    showNotification('تم إعادة الاتصال بالإنترنت', 'success');
 });
 
 // Export functions for global access
 window.fillTask = fillTask;
+window.togglePassword = togglePassword;

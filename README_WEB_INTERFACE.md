@@ -1,170 +1,232 @@
-# Trae Agent - Web Interface for Cloudflare Pages
+# Trae Agent - واجهة الويب
 
-This directory contains the web interface version of Trae Agent, optimized for deployment on Cloudflare Pages with Python Functions support.
+واجهة ويب حديثة وجميلة لـ Trae Agent، وكيل الذكاء الاصطناعي للمهام البرمجية.
 
-## 🌐 What's New
+## ✨ المميزات الجديدة
 
-The original CLI-based Trae Agent has been enhanced with:
+### � تصميم حديث وجميل
+- **تصميم متجاوب**: يعمل على جميع الأجهزة والشاشات
+- **واجهة عربية**: دعم كامل للغة العربية مع اتجاه RTL
+- **ألوان متدرجة**: تصميم عصري مع تدرجات لونية جميلة
+- **حركات سلسة**: انتقالات وحركات سلسة لتحسين تجربة المستخدم
+- **أيقونات Font Awesome**: أيقونات جميلة وواضحة
 
-- **Modern Web Interface**: Beautiful, responsive UI built with Tailwind CSS
-- **Real-time Chat Interface**: Interactive conversation with the agent
-- **Multi-provider Support**: Easy switching between OpenAI, Anthropic, Azure, etc.
-- **Cloud Deployment**: Runs on Cloudflare Pages with global edge distribution
-- **Session Management**: Persistent configurations and chat history
-- **File Management**: View created/modified files from agent tasks
+### 🚀 تحسينات الوظائف
+- **إشعارات ذكية**: إشعارات جميلة للنجاح والأخطاء
+- **إظهار/إخفاء كلمة المرور**: زر لرؤية مفتاح API
+- **تحميل سلس**: مؤشر تحميل جميل أثناء المعالجة
+- **رسائل محسنة**: تصميم جميل للرسائل مع دعم الكود
+- **نتائج منظمة**: عرض منظم للنتائج والملفات
 
-## 🚀 Quick Deploy
+### 🔧 تحسينات تقنية
+- **إصلاح خطأ HTTP 405**: تم إصلاح مشكلة الاستجابة من الخادم
+- **معالجة أفضل للأخطاء**: رسائل خطأ واضحة ومفيدة
+- **تحسين الأداء**: تحسين سرعة التحميل والاستجابة
+- **دعم متصفحات أفضل**: توافق محسن مع المتصفحات الحديثة
 
-1. **Install Dependencies**:
-   ```bash
-   npm install -g pnpm
-   npm install -g wrangler
-   wrangler login
-   ```
+## 🛠️ التثبيت والتشغيل
 
-2. **Build and Deploy to Cloudflare Pages**:
-   ```bash
-   pnpm install
-   pnpm run build
-   wrangler pages deploy build/client --project-name trae-agent-web
-   ```
+### المتطلبات
+- Node.js 18+
+- pnpm 9.0.0+
+- Python 3.11+
 
-3. **Access your deployment**: Visit the provided URL (e.g., `https://trae-agent-web.pages.dev`)
+### خطوات التثبيت
 
-## 📁 Project Structure
-
-```
-├── public/                 # Source files
-│   ├── index.html         # Main web interface
-│   └── script.js          # Frontend JavaScript
-├── build/
-│   └── client/            # Built output directory
-├── functions/             # Cloudflare Functions (Python)
-│   ├── api/
-│   │   └── execute-task.py # Backend API endpoint
-│   └── requirements.txt   # Python dependencies
-├── wrangler.toml          # Cloudflare configuration
-├── package.json           # Node.js metadata
-├── pnpm-lock.yaml         # pnpm lock file
-└── CLOUDFLARE_DEPLOYMENT.md # Detailed deployment guide
-```
-
-## 🎯 Features
-
-### Web Interface
-- **Configuration Panel**: Set provider, model, API key, and max steps
-- **Chat Interface**: Natural conversation with the agent
-- **Example Tasks**: Quick-start buttons for common tasks
-- **Results Panel**: View execution details, created files, and output
-- **Status Indicators**: Real-time feedback on agent status
-
-### Backend API
-- **Task Execution**: Runs the full Trae Agent functionality
-- **Multi-provider Support**: OpenAI, Anthropic, Azure, OpenRouter, Doubao
-- **Trajectory Recording**: Detailed execution logs
-- **File Tracking**: Monitor created/modified files
-- **Error Handling**: Comprehensive error reporting
-
-## 🔧 Configuration
-
-### Environment Variables (Cloudflare Dashboard)
-- `ENVIRONMENT`: `production`
-- `PYTHON_VERSION`: `3.11`
-
-### User Configuration (Web Interface)
-- **Provider**: Choose LLM provider
-- **Model**: Select specific model
-- **API Key**: Enter your API key (session-only)
-- **Max Steps**: Limit agent execution steps (1-50)
-
-## 📖 Usage
-
-1. **Open the web interface** in your browser
-2. **Configure your settings** in the left panel:
-   - Select your preferred LLM provider
-   - Choose a model
-   - Enter your API key
-   - Set max execution steps
-3. **Enter a task** in the chat interface
-4. **Watch the agent work** with real-time status updates
-5. **Review results** in the results panel
-
-### Example Tasks
-- "Create a Python script that calculates fibonacci numbers"
-- "Write unit tests for a Python function"
-- "Review and optimize this code for performance"
-- "Create documentation for this project"
-
-## 🔍 Monitoring
-
-### Cloudflare Dashboard
-- **Functions**: Monitor API calls and performance
-- **Analytics**: View page views and user engagement
-- **Logs**: Debug function execution in real-time
-
-### Built-in Features
-- Real-time status indicators
-- Comprehensive error messages
-- Execution trajectory recording
-- File change tracking
-
-## 🛡️ Security
-
-- **API Keys**: Only stored in browser session, never persisted
-- **Input Validation**: All inputs validated before processing
-- **CORS Protection**: Proper cross-origin resource sharing
-- **Error Handling**: No sensitive information leaked in errors
-
-## 🔧 Development
-
-### Local Testing
+1. **تثبيت التبعيات**:
 ```bash
-# Install dependencies and build
 pnpm install
-pnpm run build
-
-# Serve built files locally
-npm run dev
-
-# Or use pnpm dev command
-pnpm run dev:pnpm
-
-# Full local development with Functions
-wrangler pages dev build/client
 ```
 
-### Custom Modifications
-- **Styling**: Edit `public/index.html` and CSS
-- **Functionality**: Modify `public/script.js`
-- **Backend**: Update `functions/api/execute-task.py`
-- **Configuration**: Adjust `wrangler.toml`
+2. **بناء المشروع**:
+```bash
+pnpm run build
+```
 
-## 📚 Documentation
+3. **تشغيل الخادم المحلي**:
+```bash
+pnpm run dev
+```
 
-- **[Deployment Guide](CLOUDFLARE_DEPLOYMENT.md)**: Complete setup instructions
-- **[Original README](README.md)**: CLI version documentation
-- **[Cloudflare Docs](https://developers.cloudflare.com/pages)**: Platform documentation
+4. **النشر على Cloudflare Pages**:
+```bash
+wrangler pages deploy build/client --project-name trae-agent-web
+```
 
-## 🤝 Contributing
+## 🎯 كيفية الاستخدام
 
-1. Fork the repository
-2. Create your feature branch
-3. Test locally with `wrangler pages dev public`
-4. Commit your changes
-5. Deploy and test on Cloudflare Pages
-6. Submit a pull request
+### 1. إعداد التكوين
+- اختر مزود الخدمة (OpenAI, Anthropic, OpenRouter, Azure, Doubao)
+- اختر النموذج المناسب
+- أدخل مفتاح API الخاص بك
+- حدد عدد الخطوات القصوى
 
-## 📄 License
+### 2. إرسال المهام
+- اكتب وصف المهمة في حقل الإدخال
+- اضغط "إرسال" أو Ctrl+Enter
+- انتظر استجابة الوكيل
+- راجع النتائج والملفات المُنشأة
 
-This project maintains the same MIT License as the original Trae Agent.
+### 3. أمثلة المهام
+- إنشاء سكريبت Python لحساب فيبوناتشي
+- كتابة اختبارات وحدة لدالة Python
+- مراجعة وتحسين الكود للأداء
+- إنشاء وثائق للمشروع
 
-## 🙏 Acknowledgments
+## � ميزات التصميم
 
-- Original Trae Agent team for the core functionality
-- Cloudflare for the excellent Pages platform
-- Tailwind CSS for the beautiful styling
-- All LLM providers for making this possible
+### الألوان والتصميم
+- **الألوان الأساسية**: تدرجات زرقاء وبنفسجية
+- **الألوان الثانوية**: تدرجات خضراء وحمراء للرسائل
+- **الخطوط**: خط Cairo العربي الجميل
+- **الظلال**: ظلال ناعمة للعمق والبعد
+
+### الحركات والانتقالات
+- **حركة الإدخال**: تكبير بسيط عند التركيز
+- **حركة الأزرار**: رفع بسيط عند التحويم
+- **حركة الرسائل**: ظهور تدريجي من الأسفل
+- **حركة النتائج**: ظهور سلس مع تحريك
+
+### التجاوب
+- **الهواتف**: تصميم عمودي مع أزرار كبيرة
+- **الأجهزة اللوحية**: تخطيط متوسط مع تحسين المساحات
+- **أجهزة الكمبيوتر**: تخطيط أفقي مع لوحة جانبية
+
+## 🔧 الإعدادات المتقدمة
+
+### متغيرات البيئة
+```bash
+# إعدادات Azure (اختياري)
+AZURE_BASE_URL=your_azure_endpoint
+
+# إعدادات البيئة
+ENVIRONMENT=production
+PYTHON_VERSION=3.11
+```
+
+### تكوين Wrangler
+```toml
+# wrangler.toml
+name = "trae-agent-web"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+pages_build_output_dir = "build/client"
+
+[build]
+command = "npm install -g pnpm@9.0.0 && pnpm install && pnpm run build"
+```
+
+## 🐛 استكشاف الأخطاء
+
+### مشاكل شائعة وحلولها
+
+1. **خطأ HTTP 405**:
+   - تم إصلاحه في الإصدار الجديد
+   - تأكد من استخدام pnpm 9.0.0+
+
+2. **مشاكل في التحميل**:
+   - تحقق من اتصال الإنترنت
+   - تأكد من صحة مفتاح API
+
+3. **مشاكل في العرض**:
+   - تأكد من تحديث المتصفح
+   - امسح ذاكرة التخزين المؤقت
+
+### سجلات الأخطاء
+```bash
+# عرض سجلات Cloudflare
+wrangler pages deployment tail
+
+# سجلات الوظائف
+wrangler pages function logs
+```
+
+## 📱 دعم الأجهزة
+
+### المتصفحات المدعومة
+- ✅ Chrome 90+
+- ✅ Firefox 88+
+- ✅ Safari 14+
+- ✅ Edge 90+
+
+### الأجهزة المدعومة
+- ✅ الهواتف الذكية
+- ✅ الأجهزة اللوحية
+- ✅ أجهزة الكمبيوتر المحمولة
+- ✅ أجهزة الكمبيوتر المكتبية
+
+## � النشر
+
+### Cloudflare Pages
+```bash
+# النشر التلقائي
+git push origin main
+
+# النشر اليدوي
+wrangler pages deploy build/client --project-name trae-agent-web
+```
+
+### GitHub Actions
+```yaml
+name: Deploy to Cloudflare Pages
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+      
+      - name: Install dependencies
+        run: pnpm install
+      
+      - name: Build project
+        run: pnpm run build
+      
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: trae-agent-web
+          directory: build/client
+```
+
+## 🤝 المساهمة
+
+نرحب بمساهماتكم! يرجى اتباع هذه الخطوات:
+
+1. Fork المشروع
+2. إنشاء فرع للميزة الجديدة
+3. إجراء التغييرات
+4. إضافة الاختبارات
+5. إرسال Pull Request
+
+### معايير التصميم
+- استخدم خط Cairo للعربية
+- اتبع نظام الألوان المحدد
+- أضف حركات سلسة
+- تأكد من التجاوب
+
+## � الترخيص
+
+هذا المشروع مرخص تحت رخصة MIT. راجع ملف [LICENSE](LICENSE) للتفاصيل.
+
+## 🙏 الشكر
+
+شكراً لجميع المساهمين والمطورين الذين ساعدوا في تطوير هذه الواجهة الجميلة!
 
 ---
 
-**Ready to deploy?** Follow the [Deployment Guide](CLOUDFLARE_DEPLOYMENT.md) for detailed instructions! 🚀
+**Trae Agent** - وكيل ذكي للمهام البرمجية 🚀
