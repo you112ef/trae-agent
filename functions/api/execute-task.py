@@ -26,19 +26,22 @@ except ImportError as e:
     Config = None
     CLIConsole = None
 
-# Import Response for Cloudflare Workers
+# Import Response for Cloudflare Workers - Fixed import
 try:
+    # For Cloudflare Workers environment
     from js import Response
 except ImportError:
-    # Fallback for local development
-    class Response:
-        def __init__(self, body, status=200, headers=None):
-            self.body = body
-            self.status = status
-            self.headers = headers or {}
-        
-        def __iter__(self):
-            return iter([self.body, self.status, self.headers])
+    try:
+        # Alternative import method
+        import js
+        Response = js.Response
+    except ImportError:
+        # Fallback for local development
+        class Response:
+            def __init__(self, body, status=200, headers=None):
+                self.body = body
+                self.status = status
+                self.headers = headers or {}
 
 
 def create_config_from_request(config_data):
